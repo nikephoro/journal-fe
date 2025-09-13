@@ -56,7 +56,7 @@ export function AuthForm({ onAuth, loading, error }: AuthFormProps) {
             {!isLogin && (
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                  Full Name
+                  Username
                 </label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -68,7 +68,7 @@ export function AuthForm({ onAuth, loading, error }: AuthFormProps) {
                     onChange={handleInputChange}
                     required={!isLogin}
                     className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors"
-                    placeholder="Enter your full name"
+                    placeholder="Enter your username"
                   />
                 </div>
               </div>
