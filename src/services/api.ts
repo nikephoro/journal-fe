@@ -48,9 +48,13 @@ export const journalAPI = {
     const response = await api.post('/journal/entries', { content });
     return response.data;
   },
-  
-  getEntry: async (id: string): Promise<JournalEntry> => {
-    const response = await api.get(`/journal/entries/${id}`);
+
+  deleteEntry: async (id: string): Promise<void> => {
+    await api.delete(`/journal/entries/${id}`);
+  },
+
+  updateEntry: async (id: string, content: string): Promise<JournalEntry> => {
+    const response = await api.put(`/journal/entries/${id}`, { content });
     return response.data;
   },
 };

@@ -48,12 +48,9 @@ export function JournalEntry({ entry, onClick }: JournalEntryProps) {
           </span>
         </div>
       </div>
-      
-      <p className="text-sm text-gray-600 leading-relaxed group-hover:text-gray-700 transition-colors">
+      <p className="text-sm text-gray-600 line-clamp-2">
         {getPreview(entry.content)}
       </p>
-      
-      <div className="mt-3 w-full h-0.5 bg-gradient-to-r from-amber-200 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
     </button>
   );
 }
