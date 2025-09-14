@@ -13,6 +13,7 @@ export function EntryModal({ entry, onClose, onUpdate, onDelete }: EntryModalPro
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(entry.content);
   const [isLoading, setIsLoading] = useState(false);
+  const CHARACTER_LIMIT = 255;
 
   const handleDelete = async () => {
     if (window.confirm('Are you sure you want to delete this entry?')) {
@@ -31,7 +32,7 @@ export function EntryModal({ entry, onClose, onUpdate, onDelete }: EntryModalPro
   };
 
   const handleUpdate = async () => {
-    if (editContent !== entry.content) {
+    if (editContent !== entry.content && editContent.length <= CHARACTER_LIMIT) {
       setIsLoading(true);
       try {
         await onUpdate(entry.id, editContent);
@@ -39,6 +40,13 @@ export function EntryModal({ entry, onClose, onUpdate, onDelete }: EntryModalPro
       } finally {
         setIsLoading(false);
       }
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newContent = e.target.value;
+    if (newContent.length <= CHARACTER_LIMIT) {
+      setEditContent(newContent);
     }
   };
 
@@ -109,15 +117,17 @@ export function EntryModal({ entry, onClose, onUpdate, onDelete }: EntryModalPro
               <div className="h-full pb-14 relative">
                 <textarea
                   value={editContent}
-                  onChange={(e) => setEditContent(e.target.value)}
+                  onChange={handleChange}
                   className="w-full h-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none overflow-y-auto break-words whitespace-pre-wrap"
                   disabled={isLoading}
                   autoFocus
+                  maxLength={CHARACTER_LIMIT}
                   style={{ overflowX: 'hidden', wordWrap: 'break-word' }}
                 />
+
                 <button
                   onClick={handleUpdate}
-                  disabled={isLoading || editContent === entry.content}
+                  disabled={isLoading || editContent === entry.content || editContent.length > CHARACTER_LIMIT}
                   className="absolute bottom-0 right-2 p-3 bg-green-500 hover:bg-green-600 text-white rounded-full shadow-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   title="Submit changes"
                 >
