@@ -86,6 +86,28 @@ function App() {
     }
   };
 
+  const handleUpdateEntry = async (id: string, content: string) => {
+    try {
+      const updatedEntry = await journalAPI.updateEntry(id, content);
+      setEntries(prev => prev.map(entry =>
+        entry.id === id ? { ...entry, content: updatedEntry.content } : entry
+      ));
+      setSelectedEntry(prev => prev && prev.id === id ? { ...prev, content: updatedEntry.content } : prev);
+    } catch (error) {
+      console.error('Failed to update entry:', error);
+    }
+  };
+
+  const handleDeleteEntry = async (id: string) => {
+    try {
+      await journalAPI.deleteEntry(id);
+      setEntries(prev => prev.filter(entry => entry.id !== id));
+      setSelectedEntry(null); // Close modal after delete
+    } catch (error) {
+      console.error('Failed to delete entry:', error);
+    }
+  };
+
   const handleEntryClick = (entry: JournalEntry) => {
     setSelectedEntry(entry);
   };
@@ -139,6 +161,8 @@ function App() {
         <EntryModal 
           entry={selectedEntry}
           onClose={closeModal}
+          onUpdate={handleUpdateEntry}
+          onDelete={handleDeleteEntry}
         />
       )}
     </div>

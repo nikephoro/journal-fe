@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { X, Calendar, Clock, Trash2, Edit2, Play } from 'lucide-react';
 import { JournalEntry } from '../types';
-import { journalAPI } from '../services/api';
 
 interface EntryModalProps {
   entry: JournalEntry;
   onClose: () => void;
-  onUpdate?: (updatedEntry: JournalEntry) => void;
-  onDelete?: (id: string) => void;
+  onUpdate: (id: string, content: string) => void;
+  onDelete: (id: string) => void;
 }
 
 export function EntryModal({ entry, onClose, onUpdate, onDelete }: EntryModalProps) {
@@ -19,12 +18,7 @@ export function EntryModal({ entry, onClose, onUpdate, onDelete }: EntryModalPro
     if (window.confirm('Are you sure you want to delete this entry?')) {
       setIsLoading(true);
       try {
-        await journalAPI.deleteEntry(entry.id);
-        onDelete?.(entry.id);
-        onClose();
-      } catch (error) {
-        console.error('Failed to delete entry:', error);
-        alert('Failed to delete entry');
+        await onDelete(entry.id);
       } finally {
         setIsLoading(false);
       }
@@ -40,12 +34,8 @@ export function EntryModal({ entry, onClose, onUpdate, onDelete }: EntryModalPro
     if (editContent !== entry.content) {
       setIsLoading(true);
       try {
-        const updatedEntry = await journalAPI.updateEntry(entry.id, editContent);
-        onUpdate?.(updatedEntry);
+        await onUpdate(entry.id, editContent);
         setIsEditing(false);
-      } catch (error) {
-        console.error('Failed to update entry:', error);
-        alert('Failed to update entry');
       } finally {
         setIsLoading(false);
       }
@@ -120,9 +110,10 @@ export function EntryModal({ entry, onClose, onUpdate, onDelete }: EntryModalPro
                 <textarea
                   value={editContent}
                   onChange={(e) => setEditContent(e.target.value)}
-                  className="w-full h-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  className="w-full h-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none overflow-y-auto break-words whitespace-pre-wrap"
                   disabled={isLoading}
                   autoFocus
+                  style={{ overflowX: 'hidden', wordWrap: 'break-word' }}
                 />
                 <button
                   onClick={handleUpdate}
@@ -134,7 +125,7 @@ export function EntryModal({ entry, onClose, onUpdate, onDelete }: EntryModalPro
                 </button>
               </div>
             ) : (
-              <p className="text-gray-700 leading-relaxed whitespace-pre-wrap h-full overflow-y-auto">
+              <p className="text-gray-700 leading-relaxed whitespace-pre-wrap h-full overflow-y-auto break-words" style={{ overflowX: 'hidden', wordWrap: 'break-word' }}>
                 {entry.content}
               </p>
             )}
